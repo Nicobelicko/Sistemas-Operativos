@@ -1,28 +1,48 @@
-#include <studio.h>
+#include <stdio.h>
 
-int main(void){
-    int num1,num2;
-    char op;
+int main()
+{
+    float num1, num2,resultado;
+    char signo, control;
+    control = 's';
     do{
-        printf("Ingrese los numeros y luego el operando");
-        printf("\n 'x' Multiplicar\n'+' Sumar\n'-'Restar");
-        num1 = getchar();
-        num2 = getchar();
-        op = getchar();
+        printf("Ingrese el Primer digito \n");
+        scanf("%f", &num1);
+        printf("El primer digito es: %.3f\n", num1);
+        printf("Ingrese el segundo digito \n");
+        scanf("%f", &num2);
+        printf("El segundo digito es ..: %.3f\n", num2);
+        printf("Ingrese la operacion a realizar: + , - , / , * \n");
+        scanf("\n%c", &signo);
+        printf("El signo de la operacion es : %c\n", signo);
 
-        if(op == 'x') producto(num1,num2)
-        else if (op == '+') suma(num1,num2)
-        else if (op == '-') resta(num1,num2)
-        else printf('El operando no se reconoce');
-    }while(num1!= 'q' && num2!= 'q')
-    return(0);
-}
-void producto(int n1, int n2){
-    printf(n1*n2);
-}
-void suma(int n1, int n2){
-    printf(n1*n2);
-}
-void resta(int n1, int n2){
-    printf(n1*n2);
+        switch(signo){
+
+           case '+': 
+                printf("\nLa operación es suma");
+                 resultado = num1 + num2;
+                break;
+
+            case '-': 
+                printf("\nLa operación es resta");
+                resultado = num1 - num2;
+                break;
+
+            case '*': 
+                printf("\nLa operación es Multiplicacion");
+                resultado = num1 * num2;
+                break;
+
+            case '/': 
+                printf("\nLa operación es Division");
+                resultado = num1 / num2;
+                break;
+        } 
+
+        printf("\n\nEl resultado de la operación es: %.3f\n", resultado);
+         scanf("\n%c", &control);
+
+
+    }while(control != 'q');
+    return 0;
 }

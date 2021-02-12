@@ -8,13 +8,10 @@ int main()
     do{
         printf("Ingrese el Primer digito \n");
         scanf("%f", &num1);
-        printf("El primer digito es: %.3f\n", num1);
         printf("Ingrese el segundo digito \n");
         scanf("%f", &num2);
-        printf("El segundo digito es ..: %.3f\n", num2);
         printf("Ingrese la operacion a realizar: + , - , / , * \n");
         scanf("\n%c", &signo);
-        printf("El signo de la operacion es : %c\n", signo);
 
         switch(signo){
 

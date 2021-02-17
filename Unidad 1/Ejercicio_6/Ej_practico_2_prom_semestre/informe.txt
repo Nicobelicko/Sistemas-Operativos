@@ -10,3 +10,4 @@ Materias Ganadas: 4
 Materias perdidas: 2
 Promedio ponderado: 3.9
 
+0.0

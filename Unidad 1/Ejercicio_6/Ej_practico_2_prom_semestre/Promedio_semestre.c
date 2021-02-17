@@ -7,8 +7,8 @@ char FILE_TO_READ[] = "datos_lectura.txt";
 int main()
 {
 
-    int num_materias = 0, won = 0, lost = 0;
-    double promedio = 0, promedio_ponderado = 0;
+    int  won = 0, lost = 0;
+    
 
     char linea;
     char *linea1;
@@ -16,10 +16,29 @@ int main()
     //char materia[30];
     //char nota[3];
     //char creditos[1];
+    struct valores_materia
+    {
+        double nota;
+        double creditos;
+    }vmat;
+    struct valores_semestre
+    {
+        int tot_creditos;
+        int num_materias;
+        double promedio;
+        double promedio_ponderado;
+    }vsem;
+    
+    vmat.creditos=0.0;
+    vmat.nota=0.0;
+
+    vsem.tot_creditos=0;
+    vsem.num_materias=0;
+    vsem.promedio=0.0;
+    vsem.promedio_ponderado=0.0;
     char almacenador[40];
-    double nota=0.0;
-    double creditos=0.0;
-    int tot_creditos=0;
+    
+    
     int counter = 1;
     int counter2=1;
     FILE *read, *write;
@@ -42,7 +61,7 @@ int main()
             {
                 if (feof(read))
                     break;
-                num_materias++;
+                vsem.num_materias++;
                 fputc(' ', write);
                 fputc(' ', write);
             }
@@ -70,7 +89,7 @@ int main()
     
     read = fopen(FILE_TO_READ, "r");
     int i=0;
-    while (i<num_materias)
+    while (i<vsem.num_materias)
     {
         
 
@@ -90,16 +109,16 @@ int main()
             }else{
                 won+=1;
             }
-            nota = atof(almacenador);
+            vmat.nota = atof(almacenador);
         }
         if(counter2==3){
             printf("creditos %s",almacenador);
-            creditos=atof(almacenador);
-            tot_creditos+=(int)creditos;
+            vmat.creditos=atof(almacenador);
+            vsem.tot_creditos+=(int)vmat.creditos;
             counter2=0;
             i++;
-            promedio+=nota*creditos;
-            printf("Promedio %3.1lf\n",promedio);
+            vsem.promedio+=vmat.nota*vmat.creditos;
+            printf("Promedio %3.1lf\n",vsem.promedio);
         }
         
         
@@ -115,7 +134,7 @@ int main()
     }
     fputc('\n',write);
     
-    fprintf(write,"%s %d\n%s %d\n%s %d\n%s %3.1lf\n","Total de materias:",num_materias,"Materias Ganadas:",won,"Materias perdidas:",lost,"Promedio ponderado:",(double)(promedio/tot_creditos));
+    fprintf(write,"%s %d\n%s %d\n%s %d\n%s %3.1lf\n","Total de materias:",vsem.num_materias,"Materias Ganadas:",won,"Materias perdidas:",lost,"Promedio ponderado:",(double)(vsem.promedio/vsem.tot_creditos));
     
     
     fclose(read);

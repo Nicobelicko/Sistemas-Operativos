@@ -4,3 +4,9 @@ Modelamiento Matematico--4.2--4
 Plataformas de Programacion--5--3  
 Proyecto aplicado en TIC--2.5--3  
 Tecnologias de la informacion--2.9--3  
+
+Total de materias: 6
+Materias Ganadas: 4
+Materias perdidas: 2
+Promedio ponderado: 3.9
+

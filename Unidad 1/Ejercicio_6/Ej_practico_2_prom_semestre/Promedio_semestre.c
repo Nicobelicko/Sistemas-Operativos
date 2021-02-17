@@ -113,9 +113,11 @@ int main()
         
         
     }
-    printf("Ganadas: %d\nPerdidas: %d\n", won, lost);
-    printf("Total de creditos: %d\n",tot_creditos);
-    printf("Promedio ponderado: %3.4lf",promedio/tot_creditos);
+    fputc('\n',write);
+    
+    fprintf(write,"%s %d\n%s %d\n%s %d\n%s %3.1lf\n","Total de materias:",num_materias,"Materias Ganadas:",won,"Materias perdidas:",lost,"Promedio ponderado:",(double)(promedio/tot_creditos));
+    
+    
     fclose(read);
     fclose(write);
 }

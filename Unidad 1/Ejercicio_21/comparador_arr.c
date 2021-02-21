@@ -14,17 +14,18 @@ int main(void)
     int arreglo1 [size1];
     //arr1 = (int (*)[size1])malloc(sizeof (char [size1]));
     for(int i=0;i<size1;i++){
-        printf("Ingrese un numero para la pos %d del arreglo \n",i+1);
+        printf("Ingrese un numero para la pos %d del arreglo: ",i+1);
         scanf("%d",&arreglo1[i]);
     }
     
     
 
-    printf("Ingrese el tamaño del segundo arreglo: ");
+    printf("\nIngrese el tamaño del segundo arreglo: ");
     scanf("%d",&size2);
+    printf("\n");
     int arreglo2 [size2];
     for(int j=0;j<size2;j++){
-        printf("Ingrese un numero para la pos %d del arreglo \n",j+1);
+        printf("Ingrese un numero para la pos %d del arreglo: ",j+1);
         scanf("%d",&arreglo2[j]);
     }
     if(size1>=size2){
@@ -39,13 +40,11 @@ int main(void)
     sizeR=mayor;
     
     int arrR[sizeR];
-    for(int i=0;i<sizeR;i++){
-        arrR[i]=0;
-    }
+    
     
     arrayCommon(arreglo1,size1,arreglo2,size2,arrR,sizeR);
-    printf("Hay %d elementos comunes entre los arreglos\n",contador);
-    printf("Los numeros en comun entre los arreglos son:\n");
+    printf("\nHay %d elementos comunes entre los arreglos\n",contador);
+    printf("\nLos numeros en comun entre los arreglos son:\n");
     for(int i=contador-1;i>=0;i--){
         
         printf("|%d|\n",arrR[i]);

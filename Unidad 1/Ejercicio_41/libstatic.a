@@ -1,0 +1,16 @@
+!<arch>
+uno.c/          0           0     0     644     27        `
+int uno()
+{
+    return 1;
+}
+dos.c/          0           0     0     644     27        `
+int dos()
+{
+    return 2;
+}
+tres.c/         0           0     0     644     28        `
+int tres()
+{
+    return 3;
+}

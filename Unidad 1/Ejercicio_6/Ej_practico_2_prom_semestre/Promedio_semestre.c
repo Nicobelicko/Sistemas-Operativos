@@ -13,9 +13,6 @@ int main()
     char linea;
     char *linea1;
 
-    //char materia[30];
-    //char nota[3];
-    //char creditos[1];
     struct valores_materia
     {
         double nota;

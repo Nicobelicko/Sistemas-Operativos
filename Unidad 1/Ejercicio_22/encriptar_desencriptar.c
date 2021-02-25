@@ -13,7 +13,7 @@ int main()
     
     uint8_t (*NOT)(uint8_t) = NULL;
     uint8_t (*XOR)(uint8_t) = NULL;
-    printf("Ingrese el nombre del archivo de entrada: \n");
+    printf("Ingrese el nombre del archivo de entrada: ");
     scanf("%s", nameInputFIle);
     printf("Ingrese el nombre del archivo de salida: ");
     scanf("%s", nameOutputFIle);
@@ -36,7 +36,7 @@ int main()
     
     if (opcion == 1)
     {  
-        printf("HOla");
+        
         int  caracter;
         while (1)
         {

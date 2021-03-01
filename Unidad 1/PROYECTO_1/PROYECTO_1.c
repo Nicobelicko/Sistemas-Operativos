@@ -6,6 +6,10 @@ char *obtenerlinea(void);
 void mkdb(char *nombre, int registros);
 void mkreg(int ced, char *nomEstudiante, int sem);
 void loaddb(FILE *input);
+void savedb(FILE *output);
+void readall();
+void readsize();
+void readreg(int cedula);
 typedef struct estudiante
 {
     int cedula;
@@ -27,9 +31,10 @@ int totBasesDatos = 0;
 int regActual = 0;
 int mkdbCONTROL = 0;
 int loaddbCONTROL = 0;
+int CONTROL = 0;
 int main()
 {
-
+    int salida = 0;
     //int contador = 0;
     //char *linea;
     //char *cantRegistros;
@@ -45,13 +50,15 @@ int main()
         fscanf(stdin, "%s", comando);
         if (strncmp("mkdb", comando, 4) == 0)
         {
-            mkdbCONTROL = 1;
+            regActual = 0;
+
+            CONTROL = 1;
             char nombreDB[30];
             int cant_registros;
             fscanf(stdin, "%s", nombreDB);
-            //getc(stdin);
+
             fscanf(stdin, "%d", &cant_registros);
-            //getc(stdin);
+
             mkdb(nombreDB, cant_registros);
             /*Pedaso de funcion getline o obtenerLInea
         for (int i = 5; i < len-1; i++)
@@ -81,24 +88,28 @@ int main()
         }
         else if (strncmp("mkreg", comando, 5) == 0)
         {
-            if (mkdbCONTROL == 0)
+            if (CONTROL == 0)
             {
                 printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
-                main();
             }
-            char nomEstudiante[30];
-            int ced = 0;
-            int sem = 0;
-            fscanf(stdin, "%d", &ced);
-            getc(stdin);
-            fscanf(stdin, "%s", nomEstudiante);
+            {
+                char nomEstudiante[30];
+                int ced = 0;
+                int sem = 0;
+                fscanf(stdin, "%d", &ced);
+                getc(stdin);
+                fscanf(stdin, "%s", nomEstudiante);
 
-            fscanf(stdin, "%d", &sem);
+                fscanf(stdin, "%d", &sem);
 
-            mkreg(ced, nomEstudiante, sem);
+                mkreg(ced, nomEstudiante, sem);
+            }
         }
         else if (strncmp("loaddb", comando, 6) == 0)
         {
+            regActual = 0,
+
+            CONTROL = 1;
             FILE *input;
 
             char nombreArchivo[30];
@@ -110,18 +121,101 @@ int main()
                 perror("Error: NO SE ENCONTRO EL ARCHIVO ESPECIFICADO");
                 main();
             }
-            //printf("llega hasta aqui");
+
             loaddb(input);
             fclose(input);
         }
-    } while (1);
+        else if (strncmp("savedb", comando, 6) == 0)
+        {
+            if (CONTROL == 0)
+            {
+                printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
+                main();
+            }
+            {
+                FILE *output;
+
+                char nombreArchivo[30];
+                fscanf(stdin, "%s", nombreArchivo);
+                getc(stdin);
+                output = fopen(nombreArchivo, "w");
+                if (output == NULL)
+                {
+                    perror("Error: NO SE ENCONTRO EL ARCHIVO ESPECIFICADO");
+                }
+                else
+                {
+
+                    savedb(output);
+                    fclose(output);
+                }
+            }
+        }
+        else if (strncmp("readall", comando, 7) == 0)
+        {
+            if (CONTROL == 0)
+            {
+                printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
+                main();
+            }
+            {
+                readall();
+            }
+        }
+        else if (strncmp("readsize", comando, 8) == 0)
+        {
+            if (CONTROL == 0)
+            {
+                printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
+                main();
+            }
+            else
+            {
+                readsize();
+            }
+        }
+        else if (strncmp("readreg", comando, 7) == 0)
+        {
+            if (CONTROL == 0)
+            {
+                printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
+            }
+            else
+            {
+                int cedula = 0;
+                fscanf(stdin, "%d", &cedula);
+                readreg(cedula);
+            }
+        }
+        else if (strncmp("exit", comando, 4) == 0)
+        {
+            int opcion = 0;
+            FILE *output;
+            printf("Quiere guardar la base de datos\n1.SI\n2.NO\n");
+            scanf("%d", &opcion);
+            switch (opcion)
+            {
+            case 1:
+
+                output = fopen(ptrBasesDatos->nombre, "w");
+                savedb(output);
+                fclose(output);
+                break;
+
+            default:
+                break;
+            }
+            salida = 1;
+        }
+    } while (salida == 0);
     free(ptrEstudiantes);
     free(ptrBasesDatos);
     return 0;
 }
 void mkdb(char *nombreBD, int cantregistros)
 {
-
+    free(ptrEstudiantes);
+    free(ptrBasesDatos);
     ptrBasesDatos = (BD(*))malloc(totBasesDatos * sizeof(BD));
     ptrEstudiantes = (estudiante(*))malloc(cantregistros * sizeof(estudiante));
     strcpy(ptrBasesDatos->nombre, nombreBD);
@@ -134,17 +228,16 @@ void mkreg(int ced, char *nomEstudiante, int sem)
 {
     if (regActual == ptrBasesDatos->numRegistros)
     {
-        printf("YA ALCANZO EL MAXIMO DE REGISTROS POSIBLES");
+        printf("YA ALCANZO EL MAXIMO DE REGISTROS POSIBLES\n");
     }
     else
-    {  
-        
+    {
+
         strcpy(ptrEstudiantes[regActual].nombre, nomEstudiante);
         ptrEstudiantes[regActual].cedula = ced;
         ptrEstudiantes[regActual].semestre = sem;
         regActual++;
         printf("\n---NUEVO REGISTRO CREADO---\n");
-        //printf("%d\n", regActual);
 
         for (int i = 0; i < regActual; i++)
         {
@@ -158,69 +251,67 @@ void mkreg(int ced, char *nomEstudiante, int sem)
 }
 void loaddb(FILE *input)
 {
-    //printf("entra a loaddb");
-
-    char caracter;
+    
+    free(ptrEstudiantes);
+    free(ptrBasesDatos);
     int totregistros;
     char nombreDB[30];
     char nomEstudiante[30];
     int cedula = 0;
     int semestre = 0;
 
-    /*while(1){
-        caracter=fgetc(input);
-        if(caracter=='\n'){break;}
-       
-       strcat(nombreDB,&caracter);
-       
-    }*/
     fscanf(input, "%s", nombreDB);
 
     fscanf(input, "%d", &totregistros);
 
-    mkdb(nombreDB,totregistros);
-    
-    
+    mkdb(nombreDB, totregistros);
 
     for (int i = 0; i < totregistros; i++)
     {
         fscanf(input, "%d %s %d", &cedula, nomEstudiante, &semestre);
-        mkreg(cedula,nomEstudiante,semestre);
-        //printf("Cedula: %d\n Nombre: %s\n Semestre: %d\n",cedula,nomEstudiante,semestre);
+        if (cedula != 0 && nomEstudiante != NULL && semestre != 0)
+        {
+            mkreg(cedula, nomEstudiante, semestre);
+        }
     }
 }
-char *obtenerlinea(void)
+void savedb(FILE *output)
 {
-    char *line = malloc(100), *linep = line;
-    size_t lenmax = 100, len = lenmax;
-    int c;
 
-    if (line == NULL)
-        return NULL;
+    fprintf(output, "%s", ptrBasesDatos->nombre);
+    fprintf(output, "\n");
+    fprintf(output, "%d", ptrBasesDatos->numRegistros);
+    fprintf(output, "\n");
 
-    for (;;)
+    for (int i = 0; i < ptrBasesDatos->numRegistros; i++)
     {
-        c = fgetc(stdin);
-        if (c == EOF)
-            break;
-
-        if (--len == 0)
-        {
-            len = lenmax;
-            char *linen = realloc(linep, lenmax *= 2);
-
-            if (linen == NULL)
-            {
-                free(linep);
-                return NULL;
-            }
-            line = linen + (line - linep);
-            linep = linen;
-        }
-
-        if ((*line++ = c) == '\n')
-            break;
+        fprintf(output, "%d %s %d", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+        fprintf(output, "\n");
     }
-    *line = '\0';
-    return linep;
+}
+void readall()
+{
+    printf("| Cedula | | Nombre | Semestre |\n");
+    for (int i = 0; i < regActual; i++)
+    {
+        printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+
+        printf("\n");
+    }
+    printf("\n");
+}
+void readsize()
+{
+    printf("La cantidad de registros actualmente es de: %d\n", regActual);
+}
+void readreg(int cedula)
+{
+    for (int i = 0; i < regActual; i++)
+    {
+        if (ptrEstudiantes[i].cedula == cedula)
+        {
+            printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+            break;
+        }
+    }
 }

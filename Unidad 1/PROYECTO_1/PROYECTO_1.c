@@ -55,31 +55,7 @@ int main()
             fscanf(stdin, "%d", &cant_registros);
 
             mkdb(nombreDB, cant_registros);
-            /*Pedaso de funcion getline o obtenerLInea
-        for (int i = 5; i < len-1; i++)
-        {
-            if (linea[i] == ' ')
-            {break;}
-            
-            contador++;
-        }
-        char nombreDB[contador];
-        getc(stdin);
-        fscanf(stdin,"%s",nombreDB);
-        printf("%s",nombreDB);
-        
-        printf("%d\n",contador);
-        int j=0;
-        for(int i=0;i<contador;i++){
-            nombreDB[j]=linea[i+5];
-            j++;
-        }
-        for(int i=len-1;i>=0;i--){
-            printf("%d: %c\n",i+1,linea[i]);
-        }
-        //printf("Nombre Base de datos: %s\n",nombreDB);
-        //printf("%s",cantRegistros);
-        //mkdb(&nombreDB,)*/
+          
         }
         else if (strncmp("mkreg", comando, 5) == 0)
         {

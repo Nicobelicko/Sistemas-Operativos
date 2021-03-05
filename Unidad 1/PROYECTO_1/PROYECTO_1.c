@@ -27,7 +27,7 @@ typedef struct BD
 BD *ptrBasesDatos;
 estudiante *ptrEstudiantes;
 
-int totBasesDatos = 0;
+
 int regActual = 0;
 int mkdbCONTROL = 0;
 int loaddbCONTROL = 0;
@@ -35,14 +35,9 @@ int CONTROL = 0;
 int main()
 {
     int salida = 0;
-    //int contador = 0;
-    //char *linea;
-    //char *cantRegistros;
-    //int len = 0;
+   
     char comando[100];
 
-    //linea = obtenerlinea();
-    //len = strlen(linea);
 
     do
     {
@@ -214,9 +209,9 @@ int main()
 }
 void mkdb(char *nombreBD, int cantregistros)
 {
-    free(ptrEstudiantes);
-    free(ptrBasesDatos);
-    ptrBasesDatos = (BD(*))malloc(totBasesDatos * sizeof(BD));
+    
+    
+    ptrBasesDatos = (BD(*))malloc(sizeof(BD));
     ptrEstudiantes = (estudiante(*))malloc(cantregistros * sizeof(estudiante));
     strcpy(ptrBasesDatos->nombre, nombreBD);
     ptrBasesDatos->numRegistros = cantregistros;
@@ -239,21 +234,13 @@ void mkreg(int ced, char *nomEstudiante, int sem)
         regActual++;
         printf("\n---NUEVO REGISTRO CREADO---\n");
 
-        for (int i = 0; i < regActual; i++)
-        {
-            printf("Cedula estudiante %d: %d\n", i + 1, ptrEstudiantes[i].cedula);
-            printf("Nombre estudiante %d: %s\n", i + 1, ptrEstudiantes[i].nombre);
-            printf("Semestre estudiante %d: %d\n", i + 1, ptrEstudiantes[i].semestre);
-            printf("\n");
-        }
-        printf("\n");
+        
     }
 }
 void loaddb(FILE *input)
 {
     
-    free(ptrEstudiantes);
-    free(ptrBasesDatos);
+    
     int totregistros;
     char nombreDB[30];
     char nomEstudiante[30];
@@ -291,7 +278,7 @@ void savedb(FILE *output)
 }
 void readall()
 {
-    printf("| Cedula | | Nombre | Semestre |\n");
+    printf("| Cedula | | Nombre | Semestre |\n\n");
     for (int i = 0; i < regActual; i++)
     {
         printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);

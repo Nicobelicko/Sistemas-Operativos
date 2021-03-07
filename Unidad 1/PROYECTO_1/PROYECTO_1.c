@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *obtenerlinea(void);
+
 void mkdb(char *nombre, int registros);
 void mkreg(int ced, char *nomEstudiante, int sem);
 void loaddb(FILE *input);
@@ -277,4 +277,3 @@ void readreg(int cedula)
             break;
         }
     }
-}

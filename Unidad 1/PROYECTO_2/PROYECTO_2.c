@@ -10,7 +10,7 @@ void radb();
 void rsdb();
 void rr(int cedula);
 void lsdbs();
-void sdb(char* nombre);
+void sdb(char *nombre);
 void gdb();
 typedef struct estudiante
 {
@@ -93,7 +93,7 @@ int main()
             }
             {
 
-                gbd();
+                gdb();
             }
         }
         else if (strncmp("sdb", comando, 3) == 0)
@@ -102,9 +102,13 @@ int main()
             {
                 printf("PRIMERO DEBE CREAR O CARGAR LA BASE DE DATOS\n");
             }
+            else
             {
-
-                sdb();
+                char nom[30];
+                fscanf(stdin, "%s", nom);
+                getc(stdin);
+                //printf("%s\n",nom);
+                sdb(nom);
             }
         }
         else if (strncmp("ldb", comando, 6) == 0)
@@ -120,11 +124,13 @@ int main()
             if (input == NULL)
             {
                 perror("Error: NO SE ENCONTRO EL ARCHIVO ESPECIFICADO");
-                main();
             }
+            else
+            {
 
-            ldb(input);
-            fclose(input);
+                ldb(input);
+                fclose(input);
+            }
         }
         else if (strncmp("svdb", comando, 4) == 0)
         {
@@ -211,13 +217,13 @@ int main()
 }
 void save(BD *ptrBD)
 {
-    basesDatos[contBD]=ptrBD;
+    basesDatos[contBD] = ptrBD;
 }
 void mdb(char *nombreBD, int cantregistros)
 {
 
     ptrBasesDatos = (BD(*))malloc(sizeof(BD));
-    ptrEstudiantes = (estudiante(*))malloc(cantregistros * sizeof(estudiante));
+    ptrBasesDatos->registro = (estudiante(*))malloc(cantregistros * sizeof(estudiante));
     strcpy(ptrBasesDatos->nombre, nombreBD);
     ptrBasesDatos->numRegistros = cantregistros;
     ptrBasesDatos->regActuales = 0;
@@ -235,9 +241,9 @@ void mreg(int ced, char *nomEstudiante, int sem)
     else
     {
 
-        strcpy(ptrEstudiantes[ptrBasesDatos->regActuales].nombre, nomEstudiante);
-        ptrEstudiantes[ptrBasesDatos->regActuales].cedula = ced;
-        ptrEstudiantes[ptrBasesDatos->regActuales].semestre = sem;
+        strcpy(ptrBasesDatos->registro[ptrBasesDatos->regActuales].nombre, nomEstudiante);
+        ptrBasesDatos->registro[ptrBasesDatos->regActuales].cedula = ced;
+        ptrBasesDatos->registro[ptrBasesDatos->regActuales].semestre = sem;
         ptrBasesDatos->regActuales++;
         printf("\n---NUEVO REGISTRO CREADO---\n");
     }
@@ -265,6 +271,7 @@ void ldb(FILE *input)
             mreg(cedula, nomEstudiante, semestre);
         }
     }
+    printf("BASE DE DATOS CARGADA CORRECTAMENTE");
 }
 void svdb(FILE *output)
 {
@@ -276,7 +283,7 @@ void svdb(FILE *output)
 
     for (int i = 0; i < ptrBasesDatos->numRegistros; i++)
     {
-        fprintf(output, "%d %s %d", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+        fprintf(output, "%d %s %d", ptrBasesDatos->registro[i].cedula, ptrBasesDatos->registro[i].nombre, ptrBasesDatos->registro[i].semestre);
         fprintf(output, "\n");
     }
 }
@@ -285,7 +292,7 @@ void radb()
     printf("| Cedula | | Nombre | Semestre |\n\n");
     for (int i = 0; i < ptrBasesDatos->regActuales; i++)
     {
-        printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+        printf("| %d | %s | %d |\n", ptrBasesDatos->registro[i].cedula, ptrBasesDatos->registro[i].nombre, ptrBasesDatos->registro[i].semestre);
 
         printf("\n");
     }
@@ -293,24 +300,54 @@ void radb()
 }
 void rsdb()
 {
-    printf("La cantidad de registros actualmente es de: %d\n", ptrBasesDatos->regActuales);
+    printf("La cantidad de registros actualmente es: %d, de un total de: %d, posibles\n", ptrBasesDatos->regActuales, ptrBasesDatos->numRegistros);
 }
 void rr(int cedula)
 {
     for (int i = 0; i < ptrBasesDatos->regActuales; i++)
     {
-        if (ptrEstudiantes[i].cedula == cedula)
+        if (ptrBasesDatos->registro[i].cedula == cedula)
         {
-            printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);
+            printf("| %d | %s | %d |\n", ptrBasesDatos->registro[i].cedula, ptrBasesDatos->registro[i].nombre, ptrBasesDatos->registro[i].semestre);
             break;
         }
     }
+    printf("\n");
 }
-void lsdbs(){
+void lsdbs()
+{
 
-    /*for(int i=0;i<contBD;i++){
-        printf("%s",basesDatos[i]->nombre);
-    }*/
-    printf("%s\n",basesDatos[0]->nombre);
-    printf("%s\n",basesDatos[1]->nombre);
+    for (int i = 0; i < contBD; i++)
+    {
+        printf("Nombre BD: %s\n", basesDatos[i]->nombre);
+        printf("Tamaño: %d\n", basesDatos[i]->numRegistros);
+        printf("Numero de registros creados: %d\n",basesDatos[i]->regActuales);
+        printf("\n");
+    }
+}
+void gdb()
+{
+    printf("Nombre BD activa: %s\n", ptrBasesDatos->nombre);
+    printf("Tamaño: %d\n", ptrBasesDatos->numRegistros);
+    printf("Numero de registros disponibles: %d\n", (ptrBasesDatos->numRegistros - ptrBasesDatos->regActuales));
+}
+void sdb(char *nom)
+{
+    int match = 0;
+    
+    for (int i = 0; i < 30; i++)
+    {
+        if (strncmp(basesDatos[i]->nombre, nom, strlen(nom)) == 0)
+        {
+            
+            ptrBasesDatos = basesDatos[i];
+            //ptrBasesDatos->registro = basesDatos[i]->registro;
+            match = 1;
+            break;
+        }
+    }
+    if (match == 0)
+        printf("\nNO SE ENCONTRO LA BASE DE DATOS ESPECIFICADA\n");
+    else
+        printf("Base de datos: %s ACTIVADA",ptrBasesDatos->nombre);
 }

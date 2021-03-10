@@ -28,7 +28,6 @@ typedef struct BD
 } BD;
 
 BD *ptrBasesDatos;
-estudiante *ptrEstudiantes;
 BD *basesDatos[30];
 
 int CONTROL = 0;
@@ -104,7 +103,7 @@ int main()
             }
             else
             {
-                char nom[30];
+                char nom[20];
                 fscanf(stdin, "%s", nom);
                 getc(stdin);
                 //printf("%s\n",nom);
@@ -211,7 +210,7 @@ int main()
             salida = 1;
         }
     } while (salida == 0);
-    free(ptrEstudiantes);
+    free(ptrBasesDatos->registro);
     free(ptrBasesDatos);
     return 0;
 }
@@ -321,7 +320,7 @@ void lsdbs()
     {
         printf("Nombre BD: %s\n", basesDatos[i]->nombre);
         printf("Tamaño: %d\n", basesDatos[i]->numRegistros);
-        printf("Numero de registros creados: %d\n",basesDatos[i]->regActuales);
+        printf("Numero de registros creados: %d\n", basesDatos[i]->regActuales);
         printf("\n");
     }
 }
@@ -333,21 +332,22 @@ void gdb()
 }
 void sdb(char *nom)
 {
+    
     int match = 0;
     
-    for (int i = 0; i < 30; i++)
-    {
-        if (strncmp(basesDatos[i]->nombre, nom, strlen(nom)) == 0)
+    for (int i = 0; i < contBD; i++)
+    {   
+       
+        if (strncmp(basesDatos[i]->nombre, nom, strlen(basesDatos[i]->nombre)) == 0)
         {
-            
             ptrBasesDatos = basesDatos[i];
-            //ptrBasesDatos->registro = basesDatos[i]->registro;
             match = 1;
             break;
         }
     }
-    if (match == 0)
+    if (match == 0){
         printf("\nNO SE ENCONTRO LA BASE DE DATOS ESPECIFICADA\n");
-    else
-        printf("Base de datos: %s ACTIVADA",ptrBasesDatos->nombre);
-}
+    }else{
+        printf("\nBase de datos: %s ACTIVADA\n",ptrBasesDatos->nombre);
+    }
+} 

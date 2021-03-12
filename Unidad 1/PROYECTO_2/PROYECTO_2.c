@@ -221,8 +221,8 @@ void save(BD *ptrBD)
 void mdb(char *nombreBD, int cantregistros)
 {
 
-    ptrBasesDatos = (BD(*))malloc(sizeof(BD));
-    ptrBasesDatos->registro = (estudiante(*))malloc(cantregistros * sizeof(estudiante));
+    ptrBasesDatos = (BD(*))calloc(1,sizeof(BD));
+    ptrBasesDatos->registro = (estudiante(*))calloc(cantregistros , sizeof(estudiante));
     strcpy(ptrBasesDatos->nombre, nombreBD);
     ptrBasesDatos->numRegistros = cantregistros;
     ptrBasesDatos->regActuales = 0;

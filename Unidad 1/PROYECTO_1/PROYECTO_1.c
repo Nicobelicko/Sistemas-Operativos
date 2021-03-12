@@ -29,8 +29,6 @@ estudiante *ptrEstudiantes;
 
 
 int regActual = 0;
-int mkdbCONTROL = 0;
-int loaddbCONTROL = 0;
 int CONTROL = 0;
 int main()
 {
@@ -270,7 +268,7 @@ void readsize()
 void readreg(int cedula)
 {
     for (int i = 0; i < regActual; i++)
-    {
+    {   
         if (ptrEstudiantes[i].cedula == cedula)
         {
             printf("| %d | %s | %d |\n", ptrEstudiantes[i].cedula, ptrEstudiantes[i].nombre, ptrEstudiantes[i].semestre);

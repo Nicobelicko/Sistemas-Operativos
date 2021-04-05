@@ -1,0 +1,4 @@
+Rionegro -200
+Huila -300
+Amazonas 781
+Medellin 777

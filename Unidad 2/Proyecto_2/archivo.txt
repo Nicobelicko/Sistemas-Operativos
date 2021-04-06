@@ -1,0 +1,6 @@
+pepe 22 bailarin
+samuel 34 contratista
+santiago 55 publicista
+maria 43 ceo
+sara 26 contadora
+jean 19 programador

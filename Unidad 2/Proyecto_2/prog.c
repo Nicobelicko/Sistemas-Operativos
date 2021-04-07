@@ -24,16 +24,12 @@ void *reves(void *parametros)
    param *p = (param *)parametros;
    FILE *output;
    output = fopen(p->output_file, "w");
-   printf("HILO 1 ORDENAMIENTO INVERSO\n");
-   for (int i = p->cantidad - 1; i > 0; i--)
+
+   for (int i = p->cantidad-1; i >= 0; i--)
    {
 
       fprintf(output, "%s %d %s", ptrlinea[i].nombre, ptrlinea[i].edad, ptrlinea[i].ocupacion);
       fprintf(output, "\n");
-
-      printf("%s %d %s", ptrlinea[i].nombre, ptrlinea[i].edad, ptrlinea[i].ocupacion);
-
-      printf("\n");
    }
 
    fclose(output);
@@ -46,21 +42,16 @@ void *alfabetico(void *parametros)
    param *p = (param *)parametros;
    FILE *output;
    output = fopen(p->output_file, "w");
-
    lineaVar temp;
    int i, j;
-
    bool swapped = false;
 
-   // loop through all numbers
    for (i = 0; i < p->cantidad; i++)
    {
       swapped = false;
 
-      // loop through numbers falling ahead
       for (j = 0; j < p->cantidad - (i + 1); j++)
       {
-
          if (strcmp(ptrlinea[j].ocupacion, ptrlinea[j + 1].ocupacion) > 0)
          {
             temp = ptrlinea[j];
@@ -70,23 +61,17 @@ void *alfabetico(void *parametros)
             swapped = true;
          }
       }
-
       if (!swapped)
       {
          break;
       }
    }
-   printf("HILO 2 ORDENAMIENTO ALFABETICO\n");
-   for (int i = 0; i < p->cantidad-1; i++)
+   for (int i = 0; i < p->cantidad; i++)
    {
-
-      fprintf(output, "%s %d %s", ptrlinea[i].nombre, ptrlinea[i].edad, ptrlinea[i].ocupacion);
-      fprintf(output, "\n");
-
-      printf("%s %d %s", ptrlinea[i].nombre, ptrlinea[i].edad, ptrlinea[i].ocupacion);
-
-      printf( "\n");
+      fprintf(output,"%s %d %s",ptrlinea[i].nombre,ptrlinea[i].edad,ptrlinea[i].ocupacion);
+      fprintf(output,"\n");
    }
+   
 
    fclose(output);
 
@@ -142,7 +127,7 @@ int main(int argc, char const *argv[])
    hilo1_param.cantidad = cantidad;
    pthread_create(&id_hilo1, NULL, &reves, &hilo1_param);
 
-  
+   pthread_join(id_hilo1, NULL);
 
    pthread_t id_hilo2;
    param hilo2_param;
@@ -151,7 +136,29 @@ int main(int argc, char const *argv[])
    hilo2_param.cantidad = cantidad;
    pthread_create(&id_hilo2, NULL, &alfabetico, &hilo2_param);
 
-   pthread_join(id_hilo1, NULL);
    pthread_join(id_hilo2, NULL);
+
+   input = fopen(argv[2], "r");
+   printf("RESULTADO HILO 1\n\n");
+
+   for (int i = 0; i < cantidad; i++)
+   {
+      fscanf(input, "%s %d %s", nombreTemp, &edadTemp, ocupacionTemp);
+      printf("%s %d %s", nombreTemp, edadTemp, ocupacionTemp);
+      printf("\n");
+   }
+   fclose(input);
+   printf("\n");
+   input = fopen(argv[3], "r");
+   printf("RESULTADO HILO 2\n\n");
+
+   for (int i = 0; i < cantidad; i++)
+   {
+      fscanf(input, "%s %d %s", nombreTemp, &edadTemp, ocupacionTemp);
+      printf("%s %d %s", nombreTemp, edadTemp, ocupacionTemp);
+      printf("\n");
+   }
+   fclose(input);
+   
    return 0;
 }

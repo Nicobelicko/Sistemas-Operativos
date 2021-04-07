@@ -1,5 +1,6 @@
-santiago 55 publicista
 jean 19 programador
-samuel 34 contratista
 sara 26 contadora
 maria 43 ceo
+santiago 55 publicista
+samuel 34 contratista
+pepe 22 bailarin

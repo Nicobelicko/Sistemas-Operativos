@@ -3,3 +3,4 @@ maria 43 ceo
 sara 26 contadora
 samuel 34 contratista
 jean 19 programador
+santiago 55 publicista

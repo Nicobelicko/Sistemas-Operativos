@@ -69,15 +69,11 @@ void bubbleSort(int cantidad)
 
    lineaVar temp;
    int i, j;
-
    bool swapped = false;
-
-   // loop through all numbers
    for (i = 0; i < cantidad; i++)
    {
       swapped = false;
 
-      // loop through numbers falling ahead
       for (j = 0; j < cantidad - (i + 1); j++)
       {
 
@@ -90,7 +86,6 @@ void bubbleSort(int cantidad)
             swapped = true;
          }
       }
-
       if (!swapped)
       {
          break;

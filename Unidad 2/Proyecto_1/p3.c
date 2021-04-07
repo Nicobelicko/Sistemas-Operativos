@@ -15,12 +15,12 @@ int main(int argc, char *argv[])
         pid_hijo = fork();
         if (pid_hijo == 0)
         {
-            if (i == 0) // minimo
+            if (i == 0) 
             {
                 execvp("./p1", argv);
             }
             else if (i == 1)
-            { //maximo
+            { 
 
                 execvp("./p2", argv);
             }

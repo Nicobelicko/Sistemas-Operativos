@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <pthread.h>
+#include <ctype.h>
 
 typedef struct linea
 {
@@ -23,16 +24,26 @@ void *reves(void *parametros)
 {
    param *p = (param *)parametros;
    FILE *output;
+   lineaVar *vecReves;
+   vecReves = (lineaVar(*))malloc((p->cantidad + 1) * sizeof(lineaVar));
+   for (int i = 0; i < p->cantidad; i++)
+   {
+      vecReves[i]=ptrlinea[i];
+      vecReves[i].ocupacion[0]=toupper( vecReves[i].ocupacion[0]);
+   }
+   
+
    output = fopen(p->output_file, "w");
 
    for (int i = p->cantidad-1; i >= 0; i--)
    {
 
-      fprintf(output, "%s %d %s", ptrlinea[i].nombre, ptrlinea[i].edad, ptrlinea[i].ocupacion);
+      fprintf(output, "%s %d %s", vecReves[i].nombre, vecReves[i].edad, vecReves[i].ocupacion);
       fprintf(output, "\n");
    }
 
    fclose(output);
+   free(vecReves);
 
    return NULL;
 }
@@ -42,9 +53,18 @@ void *alfabetico(void *parametros)
    param *p = (param *)parametros;
    FILE *output;
    output = fopen(p->output_file, "w");
+   lineaVar *vecAlfabetico;
+   vecAlfabetico = (lineaVar(*))malloc((p->cantidad + 1) * sizeof(lineaVar));
+   for (int i = 0; i < p->cantidad; i++)
+   {
+      vecAlfabetico[i]=ptrlinea[i];
+      vecAlfabetico[i].ocupacion[0]=toupper( vecAlfabetico[i].ocupacion[0]);
+   }
    lineaVar temp;
    int i, j;
    bool swapped = false;
+
+   
 
    for (i = 0; i < p->cantidad; i++)
    {
@@ -52,11 +72,11 @@ void *alfabetico(void *parametros)
 
       for (j = 0; j < p->cantidad - (i + 1); j++)
       {
-         if (strcmp(ptrlinea[j].ocupacion, ptrlinea[j + 1].ocupacion) > 0)
+         if (strcmp(vecAlfabetico[j].ocupacion, vecAlfabetico[j + 1].ocupacion) > 0)
          {
-            temp = ptrlinea[j];
-            ptrlinea[j] = ptrlinea[j + 1];
-            ptrlinea[j + 1] = temp;
+            temp = vecAlfabetico[j];
+            vecAlfabetico[j] = vecAlfabetico[j + 1];
+            vecAlfabetico[j + 1] = temp;
 
             swapped = true;
          }
@@ -68,12 +88,13 @@ void *alfabetico(void *parametros)
    }
    for (int i = 0; i < p->cantidad; i++)
    {
-      fprintf(output,"%s %d %s",ptrlinea[i].nombre,ptrlinea[i].edad,ptrlinea[i].ocupacion);
+      fprintf(output,"%s %d %s",vecAlfabetico[i].nombre,vecAlfabetico[i].edad,vecAlfabetico[i].ocupacion);
       fprintf(output,"\n");
    }
    
 
    fclose(output);
+   free(vecAlfabetico);
 
    return NULL;
 }
@@ -111,6 +132,7 @@ int main(int argc, char const *argv[])
    for (int i = 0; i < cantidad; i++)
    {
       fscanf(input, "%s %d %s", nombreTemp, &edadTemp, ocupacionTemp);
+      ocupacionTemp[0]=toupper(ocupacionTemp[0]);
       strcpy(ptrlinea[i].nombre, nombreTemp);
       strcpy(ptrlinea[i].ocupacion, ocupacionTemp);
       ptrlinea[i].edad = edadTemp;
@@ -127,7 +149,7 @@ int main(int argc, char const *argv[])
    hilo1_param.cantidad = cantidad;
    pthread_create(&id_hilo1, NULL, &reves, &hilo1_param);
 
-   pthread_join(id_hilo1, NULL);
+   
 
    pthread_t id_hilo2;
    param hilo2_param;
@@ -135,6 +157,8 @@ int main(int argc, char const *argv[])
    strcpy(hilo2_param.output_file, argv[3]);
    hilo2_param.cantidad = cantidad;
    pthread_create(&id_hilo2, NULL, &alfabetico, &hilo2_param);
+
+   pthread_join(id_hilo1, NULL);
 
    pthread_join(id_hilo2, NULL);
 
@@ -144,6 +168,7 @@ int main(int argc, char const *argv[])
    for (int i = 0; i < cantidad; i++)
    {
       fscanf(input, "%s %d %s", nombreTemp, &edadTemp, ocupacionTemp);
+      
       printf("%s %d %s", nombreTemp, edadTemp, ocupacionTemp);
       printf("\n");
    }
@@ -155,10 +180,11 @@ int main(int argc, char const *argv[])
    for (int i = 0; i < cantidad; i++)
    {
       fscanf(input, "%s %d %s", nombreTemp, &edadTemp, ocupacionTemp);
+      
       printf("%s %d %s", nombreTemp, edadTemp, ocupacionTemp);
       printf("\n");
    }
    fclose(input);
-   
+   free(ptrlinea);
    return 0;
 }

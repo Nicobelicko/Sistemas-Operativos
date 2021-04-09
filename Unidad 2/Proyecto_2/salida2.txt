@@ -1,6 +1,8 @@
-pepe 22 bailarin
-maria 43 ceo
-sara 26 contadora
-samuel 34 contratista
-jean 19 programador
-santiago 55 publicista
+pepe 22 Bailarin
+jeyson 43 Bailarin
+maria 43 Ceo
+sandra 32 Ceo
+sara 26 Contadora
+samuel 34 Contratista
+jean 19 Programador
+santiago 55 Publicista

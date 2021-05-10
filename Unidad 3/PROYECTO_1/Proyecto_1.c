@@ -27,7 +27,7 @@ int main(int argc, char const *argv[])
         close(p1[0]);
 
         if(read(p2[0],lectura,tam) == -1){return 3;}
-        printf("Mensaje para el hijo: %s\n",lectura);
+        printf("Mensaje en el proceso hijo: %s\n",lectura);
 
         for(int i = 0; i < tam; i++)
         {
@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
         if(write(p2[1],lectura,tam) == -1){return 5;}
 
         if(read(p1[0],lectura,tam) == -1){return 6;}
-        printf("Mensaje para el padre: %s\n",lectura);
+        printf("Mensaje en el proceso padre: %s\n",lectura);
 
         close(p2[1]);
         close(p1[0]);

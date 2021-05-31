@@ -26,16 +26,16 @@ void unlinkSem();
 
 void createShm();
 void closeShm();
-void unlinkShm(char);
+void unlinkShm(char*);
 
 
 int main(int argc, char const *argv[])
 {
 
     pthread_t threadWrite, threadRead;
-    
-    creatSem();
     createShm();
+    createSem();
+    
     pthread_create(&threadWrite,NULL,&writeMsg,NULL);
     pthread_create(&threadRead,NULL,&readMsg,NULL);
 
@@ -83,6 +83,7 @@ void* writeMsg(){
     closeShm();
     unlinkSem();
     unlinkShm("SHM_B");
+    return NULL;
 
 }
 void* readMsg(){
@@ -105,7 +106,7 @@ void* readMsg(){
         
 
         
-        fprintf(stdout, "[2]: %s\n",pointer);
+        fprintf(stdout, "Usuario 1: %s\n",pointer);
 
         
         if(sem_post(sr2) == -1){
@@ -118,10 +119,10 @@ void* readMsg(){
             exit(1);
         }
 
-    
+    return NULL;
     
 }
-void creatSem(){
+void createSem(){
     mode_t perms = 0666;
     unsigned int value = 0;
     sw1 = sem_open("Sem_Write_1", value);
@@ -164,19 +165,19 @@ void closeSem(){
     }
 }
 void unlinkSem(){
-    if(sem_unlink(sw1) == -1){
+    if(sem_unlink("Sem_Write_1") == -1){
         perror("Error unlink sw1 Usuario 2 ");
         exit(1);
     }
-    if(sem_unlink(sr1) == -1){
+    if(sem_unlink("Sem_Read_1") == -1){
         perror("Error unlink sr1 Usuario 2 ");
         exit(1);
     }
-    if(sem_unlink(sw2) == -1){
+    if(sem_unlink("Sem_Write_2") == -1){
         perror("Error unlink sw2 Usuario 2 ");
         exit(1);
     }
-    if(sem_unlink(sr2) == -1){
+    if(sem_unlink("Sem_Read_2") == -1){
         perror("Error unlink sr2 Usuario 2 ");
         exit(1);
     }
@@ -187,7 +188,7 @@ void createShm(){
         perror("ERROR creando/abriendo shm_b Usuario 2: ");
         exit(1);
     }
-    fprintf(stdout, "Se creó shm_b con descriptor: %d\n", shm_b);
+    
     if(-1 == ftruncate(shm_b, SIZE_SHM_2)){
         perror("ERROR ftruncate shm_b Usuario 2: ");
         exit(1);
@@ -209,7 +210,7 @@ void closeShm(){
         exit(1);
     }
 }
-void unlinkShm(char shm){
+void unlinkShm(char* shm){
     
     if(shm_unlink(shm) == -1){
         perror("ERROR unlink shm_b Usuario 2: ");

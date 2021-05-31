@@ -26,16 +26,16 @@ void unlinkSem();
 
 void createShm();
 void closeShm();
-void unlinkShm(char);
+void unlinkShm(char*);
 
 
 int main(int argc, char const *argv[])
 {
 
     pthread_t threadWrite, threadRead;
-    
-    creatSem();
     createShm();
+    createSem();
+    
     pthread_create(&threadWrite,NULL,&writeMsg,NULL);
     pthread_create(&threadRead,NULL,&readMsg,NULL);
 
@@ -45,7 +45,6 @@ int main(int argc, char const *argv[])
     return 0;
 }
 void* writeMsg(){
-    
     char buffer[SIZE_SHM_1];
     int len;
     char *pointer;
@@ -68,10 +67,7 @@ void* writeMsg(){
             exit(1);
         }
 
-        
-        
         memcpy(pointer, buffer, sizeof(buffer));
-        
         
         if(sem_wait(sr2) == -1){
             perror("ERROR wait sr2 Usuario 1: ");
@@ -86,6 +82,7 @@ void* writeMsg(){
     closeShm();
     unlinkSem();
     unlinkShm("SHM_A");
+    return NULL;
 
 }
 void* readMsg(){
@@ -107,7 +104,7 @@ void* readMsg(){
         }
 
         
-        fprintf(stdout, "[2]: %s\n",pointer);
+        fprintf(stdout, "Usuario 2: %s\n",pointer);
 
         
 
@@ -121,9 +118,9 @@ void* readMsg(){
             exit(1);
         }
     
-    
+    return NULL;
 }
-void creatSem(){
+void createSem(){
     mode_t perms = 0666;
     unsigned int value = 0;
     sw1 = sem_open("Sem_Write_1",O_CREAT, perms, value);
@@ -146,6 +143,7 @@ void creatSem(){
         perror("Error en la apertura de sr2 en Usuario 1: ");
         exit(1);
     }
+    
 }
 void closeSem(){
     if(sem_close(sw1) == -1){
@@ -164,24 +162,26 @@ void closeSem(){
         perror("ERROR en close sw1 Usuario 1: ");
         exit(1);
     }
+    
 }
 void unlinkSem(){
-    if(sem_unlink(sw1) == -1){
+    if(sem_unlink("Sem_Write_1") == -1){
         perror("Error unlink sw1 Usuario 1 ");
         exit(1);
     }
-    if(sem_unlink(sr1) == -1){
+    if(sem_unlink("Sem_Read_1") == -1){
         perror("Error unlink sr1 Usuario 1 ");
         exit(1);
     }
-    if(sem_unlink(sw2) == -1){
+    if(sem_unlink("Sem_Write_2") == -1){
         perror("Error unlink sw2 Usuario 1 ");
         exit(1);
     }
-    if(sem_unlink(sr2) == -1){
+    if(sem_unlink("Sem_Read_2") == -1){
         perror("Error unlink sr2 Usuario 1 ");
         exit(1);
     }
+    
 }
 void createShm(){
     shm_a = shm_open("SHM_A", O_CREAT | O_RDWR, 0600);
@@ -189,7 +189,7 @@ void createShm(){
         perror("ERROR creando/abriendo shm_a Usuario 1: ");
         exit(1);
     }
-    fprintf(stdout, "Se creó shm_a con descriptor: %d\n", shm_a);
+    
     if(-1 == ftruncate(shm_a, SIZE_SHM_1 )){
         perror("ERROR ftruncate shm_a Usuario 1: ");
         exit(1);
@@ -200,6 +200,7 @@ void createShm(){
         perror("ERROR abriendo shm_b Usuario 1: ");
         exit(1);
     }
+    
 }
 void closeShm(){
     if(close(shm_a == -1)){
@@ -211,10 +212,11 @@ void closeShm(){
         exit(1);
     }
 }
-void unlinkShm(char shm){
+void unlinkShm(char* shm){
     if(shm_unlink(shm) == -1){
         perror("ERROR unlink shm_a Usuario 1: ");
         exit(1);
     }
+    
     
 }

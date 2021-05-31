@@ -10,45 +10,47 @@
 #include <pthread.h>
 #define PERMS 0644
 
-struct my_msgbuf {
+void* envio(void*);
+void* recibo(void*);
+
+struct msg {
    long mtype;
    char mtext[200];
 };
 
-void *envio(void *msqid)
+void *envio(void *msVar)
 {
-struct my_msgbuf buf;
+struct msg buf;
 int len;
 buf.mtype = 1;
-
+int *msqid = (int*)msVar;
 
  while(fgets(buf.mtext, sizeof buf.mtext, stdin) != NULL) 
  {
       len = strlen(buf.mtext);
       if (buf.mtext[len-1] == '\n') buf.mtext[len-1] = '\0';
-      if (msgsnd(msqid, &buf, len+1, 0) == -1) 
-      perror("msgsnd1");
+      if (msgsnd(*msqid, &buf, len+1, 0) == -1) 
+      perror("Error en el mensaje de 1");
    }
 
    strcpy(buf.mtext, "end"); 
    len = strlen(buf.mtext);
-   if (msgsnd(msqid, &buf, len+1, 0) == -1) 
+   if (msgsnd(*msqid, &buf, len+1, 0) == -1) 
    perror("msgsnd2");
+
+   return NULL;
    
-   if (msgctl(msqid, IPC_RMID, NULL) == -1) {
-      perror("msgctl");
-      exit(1);
-   }
 }
 
-void *recibo(void *msqid)
+void *recibo(void *msVar)
 {
 
-struct my_msgbuf buf;
+struct msg buf;
 int toend;
+int *msqid = (int*)msVar;
 
    for(;;) { 
-      if (msgrcv(msqid, &buf, sizeof(buf.mtext), 0, 0) == -1) {
+      if (msgrcv(*msqid, &buf, sizeof(buf.mtext), 0, 0) == -1) {
          perror("msgrcv");
          exit(1);
       }
@@ -58,6 +60,8 @@ int toend;
       break;
    }
    system("rm msgq.txt");
+   
+   return NULL;
 }
 
 
@@ -67,6 +71,7 @@ int main ()
     pthread_t id_hilo2;
     int msqid, msqid2;
     key_t key1, key2;
+    int *msqidP1, *msqidP2;
 
     system("touch msgq.txt"); 
     if ((key1 = ftok("msgq.txt", 'B')) == -1)
@@ -89,8 +94,10 @@ int main ()
       perror("msgget");
         exit(1);
    }
-    pthread_create(&id_hilo1, NULL, &envio , msqid);
-    pthread_create(&id_hilo2, NULL, &recibo, msqid2);
+   msqidP1 = &msqid;
+   msqidP2 = &msqid2;
+    pthread_create(&id_hilo1, NULL, &envio , msqidP1);
+    pthread_create(&id_hilo2, NULL, &recibo, msqidP2);
 
     pthread_join(id_hilo1, NULL);
     pthread_join(id_hilo2, NULL);

@@ -6,7 +6,7 @@ void listar(char *nombre );
 int main(int argc, char const *argv[])
 {
     char *direccion;
-    direccion = argv[1];
+    direccion = (char*)argv[1];
     printf("%s",direccion);
     listar(direccion);
     return 0;
